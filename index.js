@@ -57,9 +57,13 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
     const person = req.body;
-    if(!person){
-        return res.status(404).json({
-            message: "Name and number are missing"
+    if(!person.name || !person.number){
+        return res.status(400).json({
+            error: "Either of name or number, or both are missing"
+        })
+    } else if(contacts.find(contact => contact.name === person.name)){
+        return res.status(400).json({
+            error: "Name already exists. Try a unique name"
         })
     } else {
         const randomId = Math.floor(Math.random() * 100)
