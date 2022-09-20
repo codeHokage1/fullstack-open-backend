@@ -1,6 +1,7 @@
 const express = require('express');
 
 const app = express();
+app.use(express.json());
 
 let contacts = [
     { 
@@ -51,6 +52,26 @@ app.get('/api/persons/:id', (req, res) => {
         });
     } else {
         res.json(person);
+    }
+})
+
+app.post('/api/persons', (req, res) => {
+    const person = req.body;
+    if(!person){
+        return res.status(404).json({
+            message: "Name and number are missing"
+        })
+    } else {
+        const randomId = Math.floor(Math.random() * 100)
+        const newPerson = {
+            id : contacts.filter(contact => contact.id === randomId) ? Math.floor(Math.random() * 100) : randomId,
+            ...person 
+        }
+        contacts = contacts.concat(newPerson);
+        res.json({
+            message: "Contact created",
+            person: newPerson
+        })
     }
 })
 
